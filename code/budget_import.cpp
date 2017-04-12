@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sqlite3.h>
+
+#include "sqlite/sqlite3.h"
 
 static char CreateTableSQL[] = 
 "create table transactions (id integer primary key asc, "
