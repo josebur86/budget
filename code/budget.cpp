@@ -19,7 +19,12 @@
 #include <wx/wx.h>
 #include <wx/grid.h>
 
+// TODO(joe): Use the amalgamation build?
+#if 1
 #include <sqlite3.h>
+#else
+#include "sqlite/sqlite3.h"
+#endif
 
 #define Assert(Statement) if (!(Statement)) { *(int *)0 = 0; }
 
@@ -152,23 +157,14 @@ static unsigned char * CopyString(const unsigned char *Source)
 
 static unsigned char * CopyString(char *Source)
 {
-    return CopyString(Source);
+    return CopyString((const unsigned char *)Source);
 }
 
 static bool LoadTransactionsIntoAccount(account *Account, float StartingBalance)
 {
     bool Success = false;
 
-    transaction StartingTransaction = {};
-    StartingTransaction.Stage = CopyString("POSTED");
-    StartingTransaction.TransactionDate = CopyString("2017-01-01");
-    StartingTransaction.PostedDate = CopyString("2017-01-01");
-    StartingTransaction.Description = CopyString("Starting Balance");
-    StartingTransaction.Debit = CopyString("0.0");
-
-    AddTransactionToAccount(Account, &StartingTransaction);
-
-
+    
     sqlite3 *Database = 0;
     int Result = sqlite3_open("test.db", &Database);
     if (Result == SQLITE_OK)
@@ -204,6 +200,15 @@ static bool LoadTransactionsIntoAccount(account *Account, float StartingBalance)
 
         sqlite3_finalize(Statement);
     }
+    
+    transaction StartingTransaction = {};
+    StartingTransaction.Stage = CopyString("POSTED");
+    StartingTransaction.TransactionDate = CopyString("2017-01-01");
+    StartingTransaction.PostedDate = CopyString("2017-01-01");
+    StartingTransaction.Description = CopyString("Starting Balance");
+    StartingTransaction.Debit = CopyString("0.0");
+
+    AddTransactionToAccount(Account, &StartingTransaction);
 
     return Success;
 }
