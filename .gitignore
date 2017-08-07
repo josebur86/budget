@@ -2,3 +2,6 @@ tags
 test.db
 build/
 *.swp
+
+venv/
+*.pyc

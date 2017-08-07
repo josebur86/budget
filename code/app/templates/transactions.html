@@ -1,0 +1,24 @@
+<!doctype html>
+
+<title>Transaction Template Test</title>
+<body>
+    <h1>Transactions</h1>
+    <table>
+        <tr>
+            <th>Card</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Debit</th>
+            <th>Credit</th>
+        </tr>
+        {% for item in transactions %}
+            <tr>
+                <td>{{ item.card }}</td>
+                <td>{{ item.transaction_date }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.debit }}</td>
+                <td>{{ item.credit }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
