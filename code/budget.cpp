@@ -16,10 +16,10 @@
  *  + Implement Budget View
  */
 
-#include <wx/wx.h>
-#include <wx/grid.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <sqlite3.h>
+#include "sqlite/sqlite3.h"
 
 #define Assert(Statement) if (!(Statement)) { *(int *)0 = 0; }
 
@@ -152,7 +152,7 @@ static unsigned char * CopyString(const unsigned char *Source)
 
 static unsigned char * CopyString(char *Source)
 {
-    return CopyString(Source);
+    return CopyString((const unsigned char *)Source);
 }
 
 static bool LoadTransactionsIntoAccount(account *Account, float StartingBalance)
@@ -208,126 +208,7 @@ static bool LoadTransactionsIntoAccount(account *Account, float StartingBalance)
     return Success;
 }
 
-//
-// Events
-//
-
-enum
+int main(int argc, char **argv)
 {
-    ID_HELLO = 1,
-};
-
-//
-// BudgetFrame
-//
-
-class BudgetFrame : public wxFrame
-{
-public:
-    BudgetFrame();
-
-private:
-    void OnHello(wxCommandEvent& event);
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-
-};
-
-BudgetFrame::BudgetFrame()
-: wxFrame(0, wxID_ANY, "Budget", wxPoint(10, 20), wxSize(1000, 1000))
-{
-    wxMenu *MenuFile = new wxMenu;
-    MenuFile->Append(ID_HELLO, "&Hello...\tCtrl-H", 
-            "Help string shown in status bar for this menu item.");
-    MenuFile->AppendSeparator();
-    MenuFile->Append(wxID_EXIT);
-
-    wxMenu *MenuHelp = new wxMenu;
-    MenuHelp->Append(wxID_ABOUT);
-
-    wxMenuBar *MenuBar = new wxMenuBar;
-    MenuBar->Append(MenuFile, "&File");
-    MenuBar->Append(MenuHelp, "&Help");
-
-    SetMenuBar(MenuBar);
-
-    Bind(wxEVT_MENU, &BudgetFrame::OnHello, this, ID_HELLO);
-    Bind(wxEVT_MENU, &BudgetFrame::OnAbout, this, wxID_ABOUT);
-    Bind(wxEVT_MENU, &BudgetFrame::OnExit, this, wxID_EXIT);
-
-    bool AccountLoaded = LoadTransactionsIntoAccount(&GlobalAccount, 0.00f);
-    //Assert(AccountLoaded);
-
-    // Create Grid
-    wxGrid *Grid = new wxGrid(this, -1, wxPoint(0, 0), wxSize(1000, 540));
-    if (AccountLoaded)
-    {
-        // TODO(joe): Load the cells with the data.
-        //
-        // Then we call CreateGrid to set the dimensions of the grid
-        Grid->CreateGrid( GlobalAccount.TransactionCount, Transaction_ColumnCount );
-
-        // We can set the sizes of individual rows and columns  in pixels
-        Grid->HideRowLabels();
-        Grid->SetRowSize( 0, 60 );
-
-        for (int ColIndex = 0; ColIndex < Transaction_ColumnCount; ++ColIndex)
-        {
-            Grid->SetColLabelValue(ColIndex, GetLabelForColumn((transaction_columns)ColIndex));
-        }
-
-        for (int RowIndex = 0; RowIndex < GlobalAccount.TransactionCount; ++RowIndex)
-        {
-            transaction *Transaction = GlobalAccount.Transactions + RowIndex;
-            for (int ColIndex = 0; ColIndex < Transaction_ColumnCount; ++ColIndex)
-            {
-                Grid->SetCellValue( RowIndex, ColIndex, Transaction->Values[ColIndex]);
-            }
-        }
-        Grid->AutoSizeColumns(true);
-    }
-
-    wxStaticText *BalanceText = new wxStaticText(this, -1, "Current Balance: ");
-
-    wxBoxSizer *Sizer = new wxBoxSizer( wxVERTICAL );
-    Sizer->Add(BalanceText);
-    Sizer->Add(Grid, 1, wxEXPAND);
-
-    SetSizerAndFit( Sizer );
+    printf("Hello, Budget!\n");
 }
-
-void BudgetFrame::OnHello(wxCommandEvent& event)
-{
-    wxLogMessage("Hello world from wxWidgets.");
-}
-
-void BudgetFrame::OnExit(wxCommandEvent& event)
-{
-    Close(true);
-}
-
-void BudgetFrame::OnAbout(wxCommandEvent& event)
-{
-    wxMessageBox("This is a wxWidgets Hello World sample", 
-            "About Hello World", wxOK | wxICON_INFORMATION);
-}
-
-//
-// BudgetApp
-//
-
-class BudgetApp : public wxApp
-{
-public:
-    virtual bool OnInit();
-};
-
-bool BudgetApp::OnInit()
-{
-    BudgetFrame *Frame = new BudgetFrame();
-    Frame->Show(true);
-
-    return true; // Successful init
-}
-
-wxIMPLEMENT_APP(BudgetApp);
