@@ -60,3 +60,25 @@ class Account:
                                                        transaction.credit,
                                                        transaction.cleared))
         print("\n")
+
+    def to_string(self):
+        out = ""
+        out += "--------------------------------------------------------------<br>\n"
+        out += "Account: %s<br>\n" % self.name
+        out += "Cleared Balance + Pending Balance = Working Balance<br>\n"
+        balance = self.calc_balance()
+        out += "{0} + {1} = {2}<br>\n".format(balance["cleared_balance"],
+                                         balance["pending_balance"],
+                                         balance["working_balance"])
+        out += "Date | Payee | Note | Debit | Credit | Cleared<br>\n" 
+        out += "---- | ----- | ---- | ----- | ------ | -------<br>\n" 
+        for transaction in self.transactions:
+            out += "{} | {} | {} | {} | {} | {}<br>\n".format(transaction.date,
+                                                         transaction.payee,
+                                                         transaction.note,
+                                                         transaction.debit,
+                                                         transaction.credit,
+                                                         transaction.cleared)
+        out += "\n"
+
+        return out
