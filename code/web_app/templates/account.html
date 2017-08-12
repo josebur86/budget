@@ -1,0 +1,31 @@
+<!doctype html>
+
+<title>Account: {{ account_name }}</title>
+
+<body>
+  <h1>Account: {{ account_name }}</h1>
+
+  <h3>Cleared Balance + Pending Balance = Working Balance</h3>
+  <h3>{{balance["cleared_balance"]}} + {{balance["pending_balance"]}} = {{balance["working_balance"]}}</h3>
+
+  <table>
+    <tr>
+      <td>Date</td>
+      <td>Payee</td>
+      <td>Note</td>
+      <td>Debit</td>
+      <td>Credit</td>
+      <td>Cleared</td>
+    </tr>
+    {% for transaction in transactions %}
+    <tr>
+      <td>{{transaction.date}}</td>
+      <td>{{transaction.payee}}</td>
+      <td>{{transaction.note}}</td>
+      <td>{{transaction.debit}}</td>
+      <td>{{transaction.credit}}</td>
+      <td>{{transaction.cleared}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
