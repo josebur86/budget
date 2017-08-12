@@ -8,6 +8,21 @@
   <h3>Cleared Balance + Pending Balance = Working Balance</h3>
   <h3>{{balance["cleared_balance"]}} + {{balance["pending_balance"]}} = {{balance["working_balance"]}}</h3>
 
+  <form action="{{url_for("add_transaction")}}" method="POST">
+    <fieldset>
+      <legend>Add Transaction</legend>
+      payee: 
+      <input type="text" name="payee"></br>
+      note: 
+      <input type="text" name="note"></br>
+      debit: 
+      <input type="text" name="debit"></br>
+      credit: 
+      <input type="text" name="credit"></br>
+      <input type="submit" value="Add"></br>
+    </fieldset>
+  </form>
+
   <table>
     <tr>
       <td>Date</td>
